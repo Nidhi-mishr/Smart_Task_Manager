@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #strengthBar {
+            height: 5px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card p-4 shadow-sm" style="width: 100%; max-width: 400px;">
+        <h3 class="text-center mb-3">Register</h3>
+
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" id="password" name="password" class="form-control" required oninput="checkStrength()">
+                <div class="progress mt-1">
+                    <div id="strengthBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                </div>
+                <small id="strengthText" class="text-muted"></small>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Register</button>
+        </form>
+
+        <p class="text-center mt-3">
+            Already have an account? <a href="{{ url_for('login_page') }}">Login</a>
+        </p>
+    </div>
+</div>
+
+<script>
+    function checkStrength() {
+        const password = document.getElementById('password').value;
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
+
+        let strength = 0;
+        if (password.length >= 8) strength += 1;
+        if (/[A-Z]/.test(password)) strength += 1;
+        if (/[0-9]/.test(password)) strength += 1;
+        if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+
+        let strengthLabel = "";
+        let strengthColor = "";
+        let width = "0%";
+
+        switch (strength) {
+            case 1:
+                strengthLabel = "Weak";
+                strengthColor = "bg-danger";
+                width = "25%";
+                break;
+            case 2:
+                strengthLabel = "Moderate";
+                strengthColor = "bg-warning";
+                width = "50%";
+                break;
+            case 3:
+                strengthLabel = "Good";
+                strengthColor = "bg-info";
+                width = "75%";
+                break;
+            case 4:
+                strengthLabel = "Strong";
+                strengthColor = "bg-success";
+                width = "100%";
+                break;
+            default:
+                strengthLabel = "";
+                strengthColor = "";
+                width = "0%";
+        }
+
+        strengthBar.className = "progress-bar " + strengthColor;
+        strengthBar.style.width = width;
+        strengthText.textContent = strengthLabel;
+    }
+</script>
+
+</body>
+</html>
